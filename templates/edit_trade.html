@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Edit Trade</title>
+</head>
+<body>
+    <h1>Edit Trade</h1>
+
+    <form method="POST">
+        <label>Representative:</label><br>
+        <input type="text" name="representative" value="{{ trade.representative }}" required><br><br>
+
+        <label>Trade Date:</label><br>
+        <input type="text" name="trade_date" value="{{ trade.trade_date }}" required><br><br>
+
+        <label>Disclosure Date:</label><br>
+        <input type="text" name="disclosure_date" value="{{ trade.disclosure_date }}" required><br><br>
+
+        <label>Ticker:</label><br>
+        <input type="text" name="ticker" value="{{ trade.ticker }}" required><br><br>
+
+        <label>Asset Type:</label><br>
+        <input type="text" name="asset_type" value="{{ trade.asset_type }}" required><br><br>
+
+        <label>Transaction Type:</label><br>
+        <input type="text" name="transaction_type" value="{{ trade.transaction_type }}" required><br><br>
+
+        <label>Amount Min:</label><br>
+        <input type="text" name="amount_min" value="{{ trade.amount_min }}" required><br><br>
+
+        <label>Amount Max:</label><br>
+        <input type="text" name="amount_max" value="{{ trade.amount_max }}" required><br><br>
+
+        <label>Source:</label><br>
+        <input type="text" name="source" value="{{ trade.source }}" required><br><br>
+
+        <button type="submit">Update Trade</button>
+    </form>
+
+    <br>
+    <a href="/">Cancel</a>
+</body>
+</html>

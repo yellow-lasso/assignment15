@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add Trade</title>
+</head>
+<body>
+    <h1>Add a New Trade</h1>
+
+    <form method="POST" action="/add">
+        <label for="representative">Representative Name:</label><br>
+        <input type="text" id="representative" name="representative" required><br><br>
+
+        <label for="trade_date">Trade Date:</label><br>
+        <input type="text" id="trade_date" name="trade_date" placeholder="YYYY-MM-DD" required><br><br>
+
+        <label for="disclosure_date">Disclosure Date:</label><br>
+        <input type="text" id="disclosure_date" name="disclosure_date" placeholder="YYYY-MM-DD" required><br><br>
+
+        <label for="ticker">Ticker Symbol:</label><br>
+        <input type="text" id="ticker" name="ticker" required><br><br>
+
+        <label for="asset_type">Asset Type:</label><br>
+        <input type="text" id="asset_type" name="asset_type" required><br><br>
+
+        <label for="transaction_type">Transaction Type:</label><br>
+        <input type="text" id="transaction_type" name="transaction_type" required><br><br>
+
+        <label for="amount_min">Amount Minimum:</label><br>
+        <input type="text" id="amount_min" name="amount_min" required><br><br>
+
+        <label for="amount_max">Amount Maximum:</label><br>
+        <input type="text" id="amount_max" name="amount_max" required><br><br>
+
+        <label for="source">Source:</label><br>
+        <input type="text" id="source" name="source" required><br><br>
+
+        <button type="submit">Save Trade</button>
+    </form>
+
+    <br>
+    <a href="/">Return Home</a>
+</body>
+</html>

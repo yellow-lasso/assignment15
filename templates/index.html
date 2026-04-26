@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Congressional Trade Disclosure Analysis Tool</title>
+</head>
+<body>
+    <h1>Congressional Trade Disclosure Analysis Tool</h1>
+
+    <p>Logged in as: <strong>{{ user.username }}</strong></p>
+    <p>
+        <a href="/add">Add a New Trade</a> |
+        <a href="/logout">Logout</a>
+    </p>
+
+    <h2>Your Trade Records</h2>
+
+    {% if trades %}
+        {% for trade in trades %}
+            <hr>
+            <h3>Trade {{ loop.index }}</h3>
+            <p><strong>Representative:</strong> {{ trade.representative }}</p>
+            <p><strong>Trade Date:</strong> {{ trade.trade_date }}</p>
+            <p><strong>Disclosure Date:</strong> {{ trade.disclosure_date }}</p>
+            <p><strong>Ticker:</strong> {{ trade.ticker }}</p>
+            <p><strong>Asset Type:</strong> {{ trade.asset_type }}</p>
+            <p><strong>Transaction Type:</strong> {{ trade.transaction_type }}</p>
+            <p><strong>Amount Range:</strong> {{ trade.amount_min }} - {{ trade.amount_max }}</p>
+            <p><strong>Source:</strong> {{ trade.source }}</p>
+
+            <p>
+                <a href="/edit/{{ trade.id }}">Edit</a> |
+                <a href="/delete/{{ trade.id }}">Delete</a>
+            </p>
+        {% endfor %}
+    {% else %}
+        <p>You have not added any trades yet.</p>
+    {% endif %}
+</body>
+</html>
