@@ -1,44 +1,64 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Edit Trade</title>
-</head>
-<body>
+{% extends "base.html" %}
+
+{% block title %}Edit Trade | Congressional Trade Tracker{% endblock %}
+
+{% block content %}
+<div class="form-card">
     <h1>Edit Trade</h1>
+    <p>Update the details for this trade disclosure record.</p>
 
     <form method="POST">
-        <label>Representative:</label><br>
-        <input type="text" name="representative" value="{{ trade.representative }}" required><br><br>
+        <div class="form-grid">
+            <div class="form-field">
+                <label for="representative">Representative</label>
+                <input type="text" id="representative" name="representative" value="{{ trade.representative }}" required>
+            </div>
 
-        <label>Trade Date:</label><br>
-        <input type="text" name="trade_date" value="{{ trade.trade_date }}" required><br><br>
+            <div class="form-field">
+                <label for="ticker">Ticker</label>
+                <input type="text" id="ticker" name="ticker" value="{{ trade.ticker }}" required>
+            </div>
 
-        <label>Disclosure Date:</label><br>
-        <input type="text" name="disclosure_date" value="{{ trade.disclosure_date }}" required><br><br>
+            <div class="form-field">
+                <label for="trade_date">Trade Date</label>
+                <input type="text" id="trade_date" name="trade_date" value="{{ trade.trade_date }}" required>
+            </div>
 
-        <label>Ticker:</label><br>
-        <input type="text" name="ticker" value="{{ trade.ticker }}" required><br><br>
+            <div class="form-field">
+                <label for="disclosure_date">Disclosure Date</label>
+                <input type="text" id="disclosure_date" name="disclosure_date" value="{{ trade.disclosure_date }}" required>
+            </div>
 
-        <label>Asset Type:</label><br>
-        <input type="text" name="asset_type" value="{{ trade.asset_type }}" required><br><br>
+            <div class="form-field">
+                <label for="asset_type">Asset Type</label>
+                <input type="text" id="asset_type" name="asset_type" value="{{ trade.asset_type }}" required>
+            </div>
 
-        <label>Transaction Type:</label><br>
-        <input type="text" name="transaction_type" value="{{ trade.transaction_type }}" required><br><br>
+            <div class="form-field">
+                <label for="transaction_type">Transaction Type</label>
+                <input type="text" id="transaction_type" name="transaction_type" value="{{ trade.transaction_type }}" required>
+            </div>
 
-        <label>Amount Min:</label><br>
-        <input type="text" name="amount_min" value="{{ trade.amount_min }}" required><br><br>
+            <div class="form-field">
+                <label for="amount_min">Amount Minimum</label>
+                <input type="text" id="amount_min" name="amount_min" value="{{ trade.amount_min }}" required>
+            </div>
 
-        <label>Amount Max:</label><br>
-        <input type="text" name="amount_max" value="{{ trade.amount_max }}" required><br><br>
+            <div class="form-field">
+                <label for="amount_max">Amount Maximum</label>
+                <input type="text" id="amount_max" name="amount_max" value="{{ trade.amount_max }}" required>
+            </div>
 
-        <label>Source:</label><br>
-        <input type="text" name="source" value="{{ trade.source }}" required><br><br>
+            <div class="form-field">
+                <label for="source">Source</label>
+                <input type="text" id="source" name="source" value="{{ trade.source }}" required>
+            </div>
+        </div>
 
-        <button type="submit">Update Trade</button>
+        <div class="form-actions">
+            <button type="submit">Update Trade</button>
+            <a class="button secondary" href="{{ url_for('home') }}">Cancel</a>
+        </div>
     </form>
-
-    <br>
-    <a href="/">Cancel</a>
-</body>
-</html>
+</div>
+{% endblock %}
