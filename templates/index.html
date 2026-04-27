@@ -26,11 +26,33 @@
     </div>
 </section>
 
+<section class="toolbar">
+    <div class="form-field">
+        <label for="tradeSearch">Search Records</label>
+        <input type="text" id="tradeSearch" placeholder="Search by ticker, representative, source, date...">
+    </div>
+
+    <div class="form-field">
+        <label for="typeFilter">Filter by Transaction Type</label>
+        <select id="typeFilter">
+            <option value="all">All Types</option>
+            <option value="purchase">Purchase</option>
+            <option value="sale">Sale</option>
+            <option value="exchange">Exchange</option>
+        </select>
+    </div>
+</section>
+
 <h2>Your Trade Records</h2>
 
 {% if trades %}
+    <div id="filterEmptyMessage" class="empty-state" style="display: none;">
+        <h3>No matching trades found</h3>
+        <p>Try adjusting your search or filter.</p>
+    </div>
+
     {% for trade in trades %}
-        <article class="card">
+        <article class="card trade-card" data-transaction-type="{{ trade.transaction_type }}">
             <div class="trade-header">
                 <div>
                     <h3>{{ trade.representative }}</h3>
