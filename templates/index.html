@@ -1,41 +1,62 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Congressional Trade Disclosure Analysis Tool</title>
-</head>
-<body>
-    <h1>Congressional Trade Disclosure Analysis Tool</h1>
+{% extends "base.html" %}
 
-    <p>Logged in as: <strong>{{ user.username }}</strong></p>
-    <p>
-        <a href="/add">Add a New Trade</a> |
-        <a href="/logout">Logout</a>
-    </p>
+{% block title %}Dashboard | Congressional Trade Tracker{% endblock %}
 
-    <h2>Your Trade Records</h2>
+{% block content %}
+<section class="hero">
+    <h1>Trade Disclosure Dashboard</h1>
+    <p>Review, manage, and analyze congressional trade disclosure records associated with your account.</p>
+    <a class="button" href="{{ url_for('add_trade') }}">Add New Trade</a>
+</section>
 
-    {% if trades %}
-        {% for trade in trades %}
-            <hr>
-            <h3>Trade {{ loop.index }}</h3>
-            <p><strong>Representative:</strong> {{ trade.representative }}</p>
-            <p><strong>Trade Date:</strong> {{ trade.trade_date }}</p>
-            <p><strong>Disclosure Date:</strong> {{ trade.disclosure_date }}</p>
-            <p><strong>Ticker:</strong> {{ trade.ticker }}</p>
-            <p><strong>Asset Type:</strong> {{ trade.asset_type }}</p>
-            <p><strong>Transaction Type:</strong> {{ trade.transaction_type }}</p>
-            <p><strong>Amount Range:</strong> {{ trade.amount_min }} - {{ trade.amount_max }}</p>
-            <p><strong>Source:</strong> {{ trade.source }}</p>
+<section class="dashboard-grid">
+    <div class="stat-card">
+        <div class="stat-label">Total Records</div>
+        <div class="stat-value">{{ trades|length }}</div>
+    </div>
 
-            <p>
-                <a href="/edit/{{ trade.id }}">Edit</a> |
-                <a href="/delete/{{ trade.id }}">Delete</a>
-            </p>
-        {% endfor %}
-    {% else %}
-        <p>You have not added any trades yet.</p>
-    {% endif %}
-</body>
-</html>
+    <div class="stat-card">
+        <div class="stat-label">Account</div>
+        <div class="stat-value">{{ user.username }}</div>
+    </div>
+
+    <div class="stat-card">
+        <div class="stat-label">Data Source</div>
+        <div class="stat-value">User Entry</div>
+    </div>
+</section>
+
+<h2>Your Trade Records</h2>
+
+{% if trades %}
+    {% for trade in trades %}
+        <article class="card">
+            <div class="trade-header">
+                <div>
+                    <h3>{{ trade.representative }}</h3>
+                    <p>{{ trade.transaction_type }} • {{ trade.asset_type }}</p>
+                </div>
+                <span class="ticker-badge">{{ trade.ticker }}</span>
+            </div>
+
+            <div class="trade-details">
+                <p><strong>Trade Date:</strong> {{ trade.trade_date }}</p>
+                <p><strong>Disclosure Date:</strong> {{ trade.disclosure_date }}</p>
+                <p><strong>Amount Range:</strong> {{ trade.amount_min }} - {{ trade.amount_max }}</p>
+                <p><strong>Source:</strong> {{ trade.source }}</p>
+            </div>
+
+            <div class="actions">
+                <a class="button secondary" href="{{ url_for('edit_trade', item_id=trade.id) }}">Edit</a>
+                <a class="button danger" href="{{ url_for('delete_trade', item_id=trade.id) }}">Delete</a>
+            </div>
+        </article>
+    {% endfor %}
+{% else %}
+    <div class="empty-state">
+        <h3>No trades yet</h3>
+        <p>Add your first trade record to begin building your dashboard.</p>
+        <a class="button" href="{{ url_for('add_trade') }}">Add Trade</a>
+    </div>
+{% endif %}
+{% endblock %}
