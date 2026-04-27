@@ -37,6 +37,90 @@ def get_current_user():
         return User.query.get(user_id)
     return None
 
+def normalize_fmp_trade(item):
+    """Convert an FMP API record into fields used by our Trade model."""
+
+    representative = (
+        item.get("representative")
+        or item.get("representativeName")
+        or item.get("name")
+        or "Unknown Representative"
+    )
+
+    trade_date = (
+        item.get("transactionDate")
+        or item.get("transaction_date")
+        or item.get("tradeDate")
+        or item.get("date")
+        or ""
+    )
+
+    disclosure_date = (
+        item.get("disclosureDate")
+        or item.get("disclosure_date")
+        or item.get("filingDate")
+        or ""
+    )
+
+    ticker = (
+        item.get("symbol")
+        or item.get("ticker")
+        or item.get("assetTicker")
+        or "N/A"
+    )
+
+    asset_type = (
+        item.get("assetType")
+        or item.get("asset_type")
+        or item.get("assetDescription")
+        or "Unknown"
+    )
+
+    transaction_type = (
+        item.get("type")
+        or item.get("transactionType")
+        or item.get("transaction_type")
+        or "Unknown"
+    )
+
+    amount = (
+        item.get("amount")
+        or item.get("transactionAmount")
+        or ""
+    )
+
+    source_link = (
+        item.get("link")
+        or item.get("source")
+        or "Financial Modeling Prep"
+    )
+
+    return {
+        "representative": str(representative),
+        "trade_date": str(trade_date),
+        "disclosure_date": str(disclosure_date),
+        "ticker": str(ticker).upper(),
+        "asset_type": str(asset_type),
+        "transaction_type": str(transaction_type),
+        "amount_min": str(amount),
+        "amount_max": str(amount),
+        "source": str(source_link),
+    }
+
+
+def trade_exists(user_id, trade_data):
+    """Prevent obvious duplicate imports for the same user."""
+    return Trade.query.filter_by(
+        user_id=user_id,
+        representative=trade_data["representative"],
+        trade_date=trade_data["trade_date"],
+        disclosure_date=trade_data["disclosure_date"],
+        ticker=trade_data["ticker"],
+        transaction_type=trade_data["transaction_type"],
+        amount_min=trade_data["amount_min"],
+        amount_max=trade_data["amount_max"],
+    ).first() is not None
+
 
 @app.route("/")
 @login_required
@@ -44,6 +128,67 @@ def home():
     user = get_current_user()
     trades = Trade.query.filter_by(user_id=user.id).all()
     return render_template("index.html", trades=trades, user=user)
+
+@app.route("/sync")
+@login_required
+def sync_real_data():
+    user = get_current_user()
+    api_key = os.getenv("FMP_API_KEY")
+
+    if not api_key:
+        flash("Missing FMP_API_KEY environment variable.")
+        return redirect(url_for("home"))
+
+    url = "https://financialmodelingprep.com/stable/house-latest"
+
+    params = {
+        "page": 0,
+        "limit": 100,
+        "apikey": api_key,
+    }
+
+    try:
+        response = requests.get(url, params=params, timeout=15)
+        response.raise_for_status()
+        records = response.json()
+    except requests.RequestException as error:
+        flash(f"Unable to sync real data: {error}")
+        return redirect(url_for("home"))
+
+    if not isinstance(records, list):
+        flash("Unexpected API response format.")
+        return redirect(url_for("home"))
+
+    imported_count = 0
+    skipped_count = 0
+
+    for item in records:
+        trade_data = normalize_fmp_trade(item)
+
+        if trade_exists(user.id, trade_data):
+            skipped_count += 1
+            continue
+
+        trade = Trade(
+            representative=trade_data["representative"],
+            trade_date=trade_data["trade_date"],
+            disclosure_date=trade_data["disclosure_date"],
+            ticker=trade_data["ticker"],
+            asset_type=trade_data["asset_type"],
+            transaction_type=trade_data["transaction_type"],
+            amount_min=trade_data["amount_min"],
+            amount_max=trade_data["amount_max"],
+            source=trade_data["source"],
+            user_id=user.id,
+        )
+
+        db.session.add(trade)
+        imported_count += 1
+
+    db.session.commit()
+
+    flash(f"Sync complete. Imported {imported_count} new records. Skipped {skipped_count} duplicates.")
+    return redirect(url_for("home"))
 
 
 @app.route("/register", methods=["GET", "POST"])
