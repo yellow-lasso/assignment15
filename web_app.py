@@ -117,6 +117,22 @@ def add_trade():
 
     return render_template("add_trade.html")
 
+@app.route("/representative/<path:representative_name>")
+@login_required
+def representative_profile(representative_name):
+    user = get_current_user()
+
+    trades = Trade.query.filter_by(
+        user_id=user.id,
+        representative=representative_name
+    ).all()
+
+    return render_template(
+        "representative.html",
+        representative_name=representative_name,
+        trades=trades,
+        user=user
+    )
 
 @app.route("/edit/<int:item_id>", methods=["GET", "POST"])
 @login_required

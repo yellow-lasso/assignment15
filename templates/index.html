@@ -26,6 +26,18 @@
     </div>
 </section>
 
+<section class="chart-grid">
+    <div class="card">
+        <h3>Trades by Ticker</h3>
+        <div id="tickerChart" class="bar-chart"></div>
+    </div>
+
+    <div class="card">
+        <h3>Trades by Transaction Type</h3>
+        <div id="typeChart" class="bar-chart"></div>
+    </div>
+</section>
+
 <section class="toolbar">
     <div class="form-field">
         <label for="tradeSearch">Search Records</label>
@@ -41,6 +53,17 @@
             <option value="exchange">Exchange</option>
         </select>
     </div>
+
+    <div class="form-field">
+        <label for="sortFilter">Sort Records</label>
+        <select id="sortFilter">
+            <option value="newest">Newest Trade Date</option>
+            <option value="oldest">Oldest Trade Date</option>
+            <option value="ticker">Ticker A-Z</option>
+            <option value="representative">Representative A-Z</option>
+            <option value="type">Transaction Type A-Z</option>
+        </select>
+    </div>
 </section>
 
 <h2>Your Trade Records</h2>
@@ -51,29 +74,41 @@
         <p>Try adjusting your search or filter.</p>
     </div>
 
-    {% for trade in trades %}
-        <article class="card trade-card" data-transaction-type="{{ trade.transaction_type }}">
-            <div class="trade-header">
-                <div>
-                    <h3>{{ trade.representative }}</h3>
-                    <p>{{ trade.transaction_type }} • {{ trade.asset_type }}</p>
+    <section id="tradeList">
+        {% for trade in trades %}
+            <article
+                class="card trade-card"
+                data-ticker="{{ trade.ticker }}"
+                data-representative="{{ trade.representative }}"
+                data-trade-date="{{ trade.trade_date }}"
+                data-transaction-type="{{ trade.transaction_type }}"
+            >
+                <div class="trade-header">
+                    <div>
+                        <h3>
+                            <a href="{{ url_for('representative_profile', representative_name=trade.representative) }}">
+                                {{ trade.representative }}
+                            </a>
+                        </h3>
+                        <p>{{ trade.transaction_type }} • {{ trade.asset_type }}</p>
+                    </div>
+                    <span class="ticker-badge">{{ trade.ticker }}</span>
                 </div>
-                <span class="ticker-badge">{{ trade.ticker }}</span>
-            </div>
 
-            <div class="trade-details">
-                <p><strong>Trade Date:</strong> {{ trade.trade_date }}</p>
-                <p><strong>Disclosure Date:</strong> {{ trade.disclosure_date }}</p>
-                <p><strong>Amount Range:</strong> {{ trade.amount_min }} - {{ trade.amount_max }}</p>
-                <p><strong>Source:</strong> {{ trade.source }}</p>
-            </div>
+                <div class="trade-details">
+                    <p><strong>Trade Date:</strong> {{ trade.trade_date }}</p>
+                    <p><strong>Disclosure Date:</strong> {{ trade.disclosure_date }}</p>
+                    <p><strong>Amount Range:</strong> {{ trade.amount_min }} - {{ trade.amount_max }}</p>
+                    <p><strong>Source:</strong> {{ trade.source }}</p>
+                </div>
 
-            <div class="actions">
-                <a class="button secondary" href="{{ url_for('edit_trade', item_id=trade.id) }}">Edit</a>
-                <a class="button danger" href="{{ url_for('delete_trade', item_id=trade.id) }}">Delete</a>
-            </div>
-        </article>
-    {% endfor %}
+                <div class="actions">
+                    <a class="button secondary" href="{{ url_for('edit_trade', item_id=trade.id) }}">Edit</a>
+                    <a class="button danger delete-link" href="{{ url_for('delete_trade', item_id=trade.id) }}">Delete</a>
+                </div>
+            </article>
+        {% endfor %}
+    </section>
 {% else %}
     <div class="empty-state">
         <h3>No trades yet</h3>
