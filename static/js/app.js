@@ -189,4 +189,53 @@ document.addEventListener("DOMContentLoaded", () => {
     if (sortFilter) sortFilter.addEventListener("change", sortTrades);
 
     renderCharts();
+
+        function getTopEntry(counts) {
+        const entries = Object.entries(counts).sort((a, b) => b[1] - a[1]);
+        return entries.length > 0 ? entries[0] : ["N/A", 0];
+    }
+
+    function renderRepresentativeAnalytics() {
+        const profileCards = Array.from(document.querySelectorAll(".profile-trade-card"));
+
+        if (profileCards.length === 0) return;
+
+        const tickerCounts = buildCountMap(profileCards, "ticker");
+        const typeCounts = buildCountMap(profileCards, "transactionType");
+
+        const [topTicker, topTickerCount] = getTopEntry(tickerCounts);
+        const [topType, topTypeCount] = getTopEntry(typeCounts);
+
+        const topTickerStat = document.getElementById("topTickerStat");
+        const topTypeStat = document.getElementById("topTypeStat");
+        const profileInsight = document.getElementById("profileInsight");
+
+        if (topTickerStat) topTickerStat.textContent = topTicker;
+        if (topTypeStat) topTypeStat.textContent = topType;
+
+        const tickerData = getChartLabelsAndValues(tickerCounts);
+        const typeData = getChartLabelsAndValues(typeCounts);
+
+        createBarChart(
+            "profileTickerChart",
+            "Trades by Ticker",
+            tickerData.labels,
+            tickerData.values
+        );
+
+        createDoughnutChart(
+            "profileTypeChart",
+            typeData.labels,
+            typeData.values
+        );
+
+        if (profileInsight) {
+            profileInsight.textContent =
+                `This representative has ${profileCards.length} saved trade records. ` +
+                `The most frequently appearing ticker is ${topTicker}, with ${topTickerCount} record(s). ` +
+                `The most common transaction type is ${topType}, appearing ${topTypeCount} time(s).`;
+        }
+    }
+
+    renderRepresentativeAnalytics();
 });

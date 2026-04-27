@@ -40,10 +40,13 @@ def get_current_user():
 def normalize_fmp_trade(item):
     """Convert an FMP API record into fields used by our Trade model."""
 
+    first_name = item.get("firstName", "").strip()
+    last_name = item.get("lastName", "").strip()
+    full_name = f"{first_name} {last_name}".strip()
+
     representative = (
-        item.get("representative")
-        or item.get("representativeName")
-        or item.get("name")
+        full_name
+        or item.get("office")
         or "Unknown Representative"
     )
 
@@ -238,6 +241,7 @@ def logout():
     return redirect(url_for("login"))
 
 
+
 @app.route("/add", methods=["GET", "POST"])
 @login_required
 def add_trade():
@@ -274,11 +278,33 @@ def representative_profile(representative_name):
         representative=representative_name
     ).all()
 
+    ticker_counts = {}
+    transaction_counts = {}
+
+    for trade in trades:
+        ticker = trade.ticker or "Unknown"
+        transaction_type = trade.transaction_type or "Unknown"
+
+        ticker_counts[ticker] = ticker_counts.get(ticker, 0) + 1
+        transaction_counts[transaction_type] = transaction_counts.get(transaction_type, 0) + 1
+
+    most_traded_ticker = "N/A"
+    if ticker_counts:
+        most_traded_ticker = max(ticker_counts, key=ticker_counts.get)
+
+    most_common_transaction = "N/A"
+    if transaction_counts:
+        most_common_transaction = max(transaction_counts, key=transaction_counts.get)
+
     return render_template(
         "representative.html",
         representative_name=representative_name,
         trades=trades,
-        user=user
+        user=user,
+        ticker_counts=ticker_counts,
+        transaction_counts=transaction_counts,
+        most_traded_ticker=most_traded_ticker,
+        most_common_transaction=most_common_transaction
     )
 
 @app.route("/edit/<int:item_id>", methods=["GET", "POST"])

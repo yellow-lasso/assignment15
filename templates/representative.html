@@ -1,0 +1,83 @@
+{% extends "base.html" %}
+
+{% block title %}{{ representative_name }} | Congressional Trade Tracker{% endblock %}
+
+{% block content %}
+<section class="hero">
+    <h1>{{ representative_name }}</h1>
+    <p>Auto-generated analytics profile based on trade records saved in your account.</p>
+    <a class="button secondary" href="{{ url_for('home') }}">Back to Dashboard</a>
+</section>
+
+<section class="dashboard-grid">
+    <div class="stat-card">
+        <div class="stat-label">Total Trades</div>
+        <div class="stat-value">{{ trades|length }}</div>
+    </div>
+
+    <div class="stat-card">
+        <div class="stat-label">Most Traded Ticker</div>
+        <div class="stat-value" id="topTickerStat">Loading...</div>
+    </div>
+
+    <div class="stat-card">
+        <div class="stat-label">Most Common Type</div>
+        <div class="stat-value" id="topTypeStat">Loading...</div>
+    </div>
+</section>
+
+<section class="chart-grid">
+    <div class="card chart-card">
+        <h3>Trades by Ticker</h3>
+        <div class="chart-wrapper">
+            <canvas id="profileTickerChart"></canvas>
+        </div>
+    </div>
+
+    <div class="card chart-card">
+        <h3>Transaction Breakdown</h3>
+        <div class="chart-wrapper">
+            <canvas id="profileTypeChart"></canvas>
+        </div>
+    </div>
+</section>
+
+<section class="card">
+    <h2>Profile Insights</h2>
+    <p id="profileInsight">Generating insights...</p>
+</section>
+
+<h2>Trade Records</h2>
+
+{% if trades %}
+    <section id="profileTradeList">
+        {% for trade in trades %}
+            <article
+                class="card profile-trade-card"
+                data-ticker="{{ trade.ticker }}"
+                data-transaction-type="{{ trade.transaction_type }}"
+                data-trade-date="{{ trade.trade_date }}"
+            >
+                <div class="trade-header">
+                    <div>
+                        <h3>{{ trade.ticker }}</h3>
+                        <p>{{ trade.transaction_type }} • {{ trade.asset_type }}</p>
+                    </div>
+                    <span class="ticker-badge">{{ trade.ticker }}</span>
+                </div>
+
+                <div class="trade-details">
+                    <p><strong>Trade Date:</strong> {{ trade.trade_date }}</p>
+                    <p><strong>Disclosure Date:</strong> {{ trade.disclosure_date }}</p>
+                    <p><strong>Amount Range:</strong> {{ trade.amount_min }} - {{ trade.amount_max }}</p>
+                    <p><strong>Source:</strong> {{ trade.source }}</p>
+                </div>
+            </article>
+        {% endfor %}
+    </section>
+{% else %}
+    <div class="empty-state">
+        <h3>No trades found for this representative.</h3>
+    </div>
+{% endif %}
+{% endblock %}
