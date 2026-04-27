@@ -1,4 +1,6 @@
 document.addEventListener("DOMContentLoaded", () => {
+    console.log("app.js loaded");
+
     const searchInput = document.getElementById("tradeSearch");
     const typeFilter = document.getElementById("typeFilter");
     const sortFilter = document.getElementById("sortFilter");
@@ -86,48 +88,100 @@ document.addEventListener("DOMContentLoaded", () => {
         return counts;
     }
 
-    function renderBarChart(containerId, counts) {
-        const container = document.getElementById(containerId);
-        if (!container) return;
+    function getChartLabelsAndValues(counts, limit = 10) {
+        const entries = Object.entries(counts)
+            .sort((a, b) => b[1] - a[1])
+            .slice(0, limit);
 
-        container.innerHTML = "";
+        return {
+            labels: entries.map((entry) => entry[0]),
+            values: entries.map((entry) => entry[1])
+        };
+    }
 
-        const entries = Object.entries(counts).sort((a, b) => b[1] - a[1]);
+    function createBarChart(canvasId, title, labels, values) {
+        const canvas = document.getElementById(canvasId);
+        if (!canvas || typeof Chart === "undefined") return;
 
-        if (entries.length === 0) {
-            container.innerHTML = "<p>No data available.</p>";
-            return;
-        }
+        new Chart(canvas, {
+            type: "bar",
+            data: {
+                labels: labels,
+                datasets: [
+                    {
+                        label: title,
+                        data: values,
+                        borderWidth: 1,
+                        borderRadius: 8
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        display: false
+                    },
+                    tooltip: {
+                        enabled: true
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        ticks: {
+                            precision: 0
+                        }
+                    }
+                }
+            }
+        });
+    }
 
-        const maxValue = Math.max(...entries.map((entry) => entry[1]));
+    function createDoughnutChart(canvasId, labels, values) {
+        const canvas = document.getElementById(canvasId);
+        if (!canvas || typeof Chart === "undefined") return;
 
-        entries.forEach(([label, value]) => {
-            const row = document.createElement("div");
-            row.className = "bar-row";
-
-            const labelEl = document.createElement("div");
-            labelEl.className = "bar-label";
-            labelEl.textContent = label;
-
-            const barWrap = document.createElement("div");
-            barWrap.className = "bar-wrap";
-
-            const bar = document.createElement("div");
-            bar.className = "bar-fill";
-            bar.style.width = `${(value / maxValue) * 100}%`;
-            bar.textContent = value;
-
-            barWrap.appendChild(bar);
-            row.appendChild(labelEl);
-            row.appendChild(barWrap);
-
-            container.appendChild(row);
+        new Chart(canvas, {
+            type: "doughnut",
+            data: {
+                labels: labels,
+                datasets: [
+                    {
+                        label: "Trades",
+                        data: values
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        position: "bottom"
+                    }
+                }
+            }
         });
     }
 
     function renderCharts() {
-        renderBarChart("tickerChart", buildCountMap(tradeCards, "ticker"));
-        renderBarChart("typeChart", buildCountMap(tradeCards, "transactionType"));
+        const tickerData = getChartLabelsAndValues(buildCountMap(tradeCards, "ticker"));
+        const typeData = getChartLabelsAndValues(buildCountMap(tradeCards, "transactionType"));
+
+        createBarChart(
+            "tickerChart",
+            "Trades by Ticker",
+            tickerData.labels,
+            tickerData.values
+        );
+
+        createDoughnutChart(
+            "typeChart",
+            typeData.labels,
+            typeData.values
+        );
     }
 
     if (searchInput) searchInput.addEventListener("input", filterTrades);
