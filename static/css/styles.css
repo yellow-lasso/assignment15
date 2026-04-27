@@ -1,0 +1,245 @@
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    font-family: Arial, Helvetica, sans-serif;
+    background: #f4f6f8;
+    color: #172033;
+}
+
+.navbar {
+    background: #0f172a;
+    color: white;
+    padding: 16px 32px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.brand {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-size: 18px;
+    font-weight: 700;
+}
+
+.brand-mark {
+    background: #38bdf8;
+    color: #0f172a;
+    padding: 8px 10px;
+    border-radius: 10px;
+    font-weight: 800;
+}
+
+.nav-links a {
+    color: #e2e8f0;
+    text-decoration: none;
+    margin-left: 18px;
+    font-weight: 600;
+}
+
+.nav-links a:hover {
+    color: #38bdf8;
+}
+
+.container {
+    max-width: 1100px;
+    margin: 32px auto;
+    padding: 0 24px;
+}
+
+.hero {
+    background: white;
+    border-radius: 18px;
+    padding: 32px;
+    margin-bottom: 24px;
+    box-shadow: 0 10px 25px rgba(15, 23, 42, 0.08);
+}
+
+.hero h1 {
+    margin-top: 0;
+    font-size: 34px;
+}
+
+.hero p {
+    color: #64748b;
+    font-size: 16px;
+}
+
+.dashboard-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 18px;
+    margin-bottom: 24px;
+}
+
+.stat-card {
+    background: white;
+    border-radius: 16px;
+    padding: 22px;
+    box-shadow: 0 8px 20px rgba(15, 23, 42, 0.07);
+}
+
+.stat-label {
+    color: #64748b;
+    font-size: 14px;
+    margin-bottom: 8px;
+}
+
+.stat-value {
+    font-size: 26px;
+    font-weight: 800;
+}
+
+.card {
+    background: white;
+    border-radius: 18px;
+    padding: 24px;
+    margin-bottom: 18px;
+    box-shadow: 0 8px 20px rgba(15, 23, 42, 0.07);
+}
+
+.trade-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 16px;
+    margin-bottom: 14px;
+}
+
+.ticker-badge {
+    background: #e0f2fe;
+    color: #0369a1;
+    padding: 8px 12px;
+    border-radius: 999px;
+    font-weight: 800;
+}
+
+.trade-details {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px 24px;
+    color: #334155;
+}
+
+.trade-details strong {
+    color: #0f172a;
+}
+
+.actions {
+    margin-top: 18px;
+}
+
+.button,
+button {
+    display: inline-block;
+    border: none;
+    background: #2563eb;
+    color: white;
+    padding: 10px 16px;
+    border-radius: 10px;
+    text-decoration: none;
+    font-weight: 700;
+    cursor: pointer;
+}
+
+.button:hover,
+button:hover {
+    background: #1d4ed8;
+}
+
+.button.secondary {
+    background: #475569;
+}
+
+.button.secondary:hover {
+    background: #334155;
+}
+
+.button.danger {
+    background: #dc2626;
+}
+
+.button.danger:hover {
+    background: #b91c1c;
+}
+
+.form-card {
+    max-width: 720px;
+    background: white;
+    border-radius: 18px;
+    padding: 28px;
+    box-shadow: 0 8px 20px rgba(15, 23, 42, 0.07);
+}
+
+.form-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 18px;
+}
+
+.form-field {
+    display: flex;
+    flex-direction: column;
+}
+
+label {
+    font-weight: 700;
+    margin-bottom: 6px;
+}
+
+input {
+    padding: 11px;
+    border: 1px solid #cbd5e1;
+    border-radius: 10px;
+    font-size: 15px;
+}
+
+input:focus {
+    outline: 2px solid #93c5fd;
+    border-color: #2563eb;
+}
+
+.form-actions {
+    margin-top: 24px;
+    display: flex;
+    gap: 12px;
+}
+
+.flash-box {
+    background: #fef3c7;
+    color: #92400e;
+    padding: 12px 16px;
+    border-radius: 12px;
+    margin-bottom: 18px;
+}
+
+.empty-state {
+    background: white;
+    border-radius: 18px;
+    padding: 32px;
+    text-align: center;
+    color: #64748b;
+}
+
+@media (max-width: 800px) {
+    .dashboard-grid,
+    .trade-details,
+    .form-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .navbar {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 14px;
+    }
+
+    .nav-links a {
+        margin-left: 0;
+        margin-right: 14px;
+    }
+}
