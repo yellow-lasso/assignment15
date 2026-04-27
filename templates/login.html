@@ -1,32 +1,29 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login</title>
-</head>
-<body>
-    <h1>Login</h1>
+{% extends "base.html" %}
 
-    {% with messages = get_flashed_messages() %}
-        {% if messages %}
-            {% for message in messages %}
-                <p><strong>{{ message }}</strong></p>
-            {% endfor %}
-        {% endif %}
-    {% endwith %}
+{% block title %}Login | Congressional Trade Tracker{% endblock %}
+
+{% block content %}
+<div class="form-card">
+    <h1>Login</h1>
+    <p>Access your trade disclosure dashboard.</p>
 
     <form method="POST">
-        <label for="username">Username:</label><br>
-        <input type="text" id="username" name="username" required><br><br>
+        <div class="form-field">
+            <label for="username">Username</label>
+            <input type="text" id="username" name="username" required>
+        </div>
 
-        <label for="password">Password:</label><br>
-        <input type="password" id="password" name="password" required><br><br>
+        <br>
 
-        <button type="submit">Login</button>
+        <div class="form-field">
+            <label for="password">Password</label>
+            <input type="password" id="password" name="password" required>
+        </div>
+
+        <div class="form-actions">
+            <button type="submit">Login</button>
+            <a class="button secondary" href="{{ url_for('register') }}">Register</a>
+        </div>
     </form>
-
-    <br>
-    <a href="/register">Need an account? Register</a>
-</body>
-</html>
+</div>
+{% endblock %}
